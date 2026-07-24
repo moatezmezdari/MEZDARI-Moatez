@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moatez Mezdari — Mechanical Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #10141a;
+    --bg-alt: #151b23;
+    --panel: #1a212b;
+    --panel-line: #2a3542;
+    --ink: #e9e6dd;
+    --ink-dim: #8fa0ac;
+    --ink-faint: #4d5c68;
+    --accent: #5fc3e0;
+    --accent-dim: #3a5c68;
+    --amber: #e8a33d;
+    --safety: #e0603f;
+    --radius: 2px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent); color:#0a0d11;}
+
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .display{font-family:'Space Grotesk', sans-serif;}
+
+  a{color:inherit; text-decoration:none;}
+
+  /* blueprint grid backdrop */
+  .grid-bg{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--panel-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--panel-line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity:0.28;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 20%, black 40%, transparent 90%);
+  }
+
+  /* ============ NAV ============ */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 5vw;
+    background:rgba(16,20,26,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .logo-mark{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600; font-size:15px; letter-spacing:0.02em;
+  }
+  .logo-mark svg{width:26px; height:26px;}
+  nav ul{list-style:none; display:flex; gap:36px;}
+  nav ul li a{
+    font-size:13px; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--ink-dim); font-family:'JetBrains Mono', monospace;
+    transition:color 0.2s;
+    position:relative;
+  }
+  nav ul li a:hover{color:var(--accent);}
+  nav ul li a:focus-visible, a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  .nav-links{display:flex; align-items:center; gap:36px;}
+  .nav-toggle{display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:6px;}
+  .nav-toggle span{width:22px; height:2px; background:var(--ink);}
+
+  /* ============ HERO ============ */
+  header.hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 120px 5vw 80px;
+    border-bottom:1px solid var(--panel-line);
+    overflow:hidden;
+  }
+  .hero-inner{position:relative; z-index:2; max-width:1100px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; letter-spacing:0.12em; color:var(--accent);
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+    text-transform:uppercase;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--accent);}
+  h1.hero-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 7vw, 5.4rem);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  .hero-role{
+    margin-top:26px;
+    font-size:clamp(1.05rem, 2vw, 1.35rem);
+    color:var(--ink-dim);
+    max-width:46ch;
+    font-weight:400;
+  }
+  .hero-role b{color:var(--ink); font-weight:600;}
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:28px;
+    margin-top:44px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; color:var(--ink-dim);
+  }
+  .hero-meta span{display:flex; align-items:center; gap:8px;}
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--amber);}
+
+  .hero-cta{
+    margin-top:46px; display:flex; gap:16px; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px; letter-spacing:0.03em;
+    padding:13px 26px;
+    border:1px solid var(--panel-line);
+    border-radius:var(--radius);
+    display:inline-flex; align-items:center; gap:10px;
+    transition:all 0.2s;
+  }
+  .btn-primary{background:var(--accent); color:#0a0d11; border-color:var(--accent); font-weight:700;}
+  .btn-primary:hover{background:#7dd1e8;}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* corner coordinates like a drawing sheet */
+  .sheet-coords{
+    position:absolute; z-index:2; font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--ink-faint); letter-spacing:0.05em;
+  }
+  .coord-tl{top:100px; left:5vw;}
+  .coord-br{bottom:40px; right:5vw; text-align:right;}
+
+  /* ============ SECTION SHELL ============ */
+  section{
+    position:relative;
+    padding: 100px 5vw;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .section-head{
+    display:flex; align-items:baseline; gap:18px; margin-bottom:56px;
+    max-width:1200px;
+  }
+  .section-head .tag{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--amber);
+    letter-spacing:0.1em; white-space:nowrap;
+  }
+  .section-head h2{
+    font-family:'Space Grotesk', sans-serif; font-weight:600;
+    font-size:clamp(1.7rem, 3vw, 2.3rem);
+  }
+  .section-head .rule{flex:1; height:1px; background:var(--panel-line); margin-left:8px;}
+  .section-intro{max-width:640px; color:var(--ink-dim); margin-bottom:56px; margin-top:-30px; font-size:15px;}
+
+  .wrap{max-width:1200px; margin:0 auto;}
+
+  /* ============ ABOUT ============ */
+  .about-grid{
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:64px; max-width:1200px;
+  }
+  .about-grid p{color:var(--ink-dim); font-size:16px; margin-bottom:18px; max-width:60ch;}
+  .about-grid p b{color:var(--ink); font-weight:600;}
+  .spec-list{border:1px solid var(--panel-line); border-radius:var(--radius); overflow:hidden;}
+  .spec-row{
+    display:flex; justify-content:space-between; padding:16px 20px;
+    border-bottom:1px solid var(--panel-line);
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+  }
+  .spec-row:last-child{border-bottom:none;}
+  .spec-row span:first-child{color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em;}
+  .spec-row span:last-child{color:var(--ink); text-align:right;}
+
+  /* ============ EXPERIENCE — leader-line timeline ============ */
+  .timeline{position:relative; max-width:1200px;}
+  .timeline::before{
+    content:''; position:absolute; left:9px; top:8px; bottom:8px; width:1px;
+    background: repeating-linear-gradient(to bottom, var(--panel-line) 0, var(--panel-line) 6px, transparent 6px, transparent 12px);
+  }
+  .tl-item{position:relative; padding-left:48px; margin-bottom:64px;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-node{
+    position:absolute; left:0; top:6px; width:19px; height:19px;
+    border:1px solid var(--accent); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tl-node::after{content:''; width:6px; height:6px; border-radius:50%; background:var(--accent);}
+  .tl-item.past .tl-node{border-color:var(--ink-faint);}
+  .tl-item.past .tl-node::after{background:var(--ink-faint);}
+
+  .tl-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:12px; margin-bottom:6px;}
+  .tl-role{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.3rem;}
+  .tl-date{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--amber); margin-left:auto;}
+  .tl-org{color:var(--ink-dim); font-size:14px; margin-bottom:18px;}
+  .tl-org b{color:var(--accent); font-weight:500;}
+
+  .part-tags{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;}
+  .part-tag{
+    font-family:'JetBrains Mono', monospace; font-size:11.5px;
+    border:1px solid var(--panel-line); color:var(--ink-dim);
+    padding:5px 11px; border-radius:20px; letter-spacing:0.02em;
+  }
+  .tl-list{list-style:none; max-width:70ch;}
+  .tl-list li{
+    position:relative; padding-left:20px; margin-bottom:9px;
+    color:var(--ink-dim); font-size:14.5px;
+  }
+  .tl-list li::before{
+    content:'—'; position:absolute; left:0; color:var(--ink-faint);
+  }
+
+  /* ============ SKILLS ============ */
+  .skill-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--panel-line); border:1px solid var(--panel-line); max-width:1200px;}
+  .skill-panel{background:var(--bg-alt); padding:32px 28px;}
+  .skill-panel h3{
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--accent);
+    letter-spacing:0.08em; text-transform:uppercase; margin-bottom:20px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .skill-panel h3::before{content:attr(data-ref); color:var(--ink-faint);}
+  .skill-panel ul{list-style:none;}
+  .skill-panel li{
+    font-size:14.5px; color:var(--ink); padding:9px 0;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .skill-panel li:last-child{border-bottom:none;}
+
+  /* ============ CERTS / EDU ============ */
+  .cert-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:28px; max-width:1200px;}
+  .cert-card{
+    border:1px solid var(--panel-line); padding:26px 28px; border-radius:var(--radius);
+    background:var(--bg-alt);
+    position:relative;
+  }
+  .cert-card .stamp{
+    position:absolute; top:24px; right:24px;
+    width:40px; height:40px; border:1.5px solid var(--amber); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-size:9px; color:var(--amber);
+    transform:rotate(-8deg);
+  }
+  .cert-card h4{font-family:'Space Grotesk', sans-serif; font-size:1.05rem; margin-bottom:4px; max-width:80%;}
+  .cert-card .cert-org{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-faint); margin-bottom:16px;}
+  .cert-card .cert-items{color:var(--ink-dim); font-size:13.5px; line-height:1.7;}
+
+  .edu-lang-row{display:grid; grid-template-columns: 1.4fr 1fr; gap:64px; max-width:1200px; margin-top:80px;}
+  .edu-item{padding:20px 0; border-top:1px solid var(--panel-line);}
+  .edu-item:first-child{border-top:none;}
+  .edu-item .edu-year{font-family:'JetBrains Mono', monospace; color:var(--amber); font-size:12px;}
+  .edu-item h4{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.05rem; margin:6px 0 4px;}
+  .edu-item .edu-school{color:var(--ink-dim); font-size:14px;}
+
+  .lang-block h3{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--accent); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:20px;}
+  .lang-row{display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-top:1px solid var(--panel-line); font-size:14.5px;}
+  .lang-row:first-of-type{border-top:none;}
+  .lang-bars{display:flex; gap:4px;}
+  .lang-bars span{width:16px; height:6px; background:var(--panel-line); border-radius:1px;}
+  .lang-bars span.on{background:var(--accent);}
+
+  /* ============ FOOTER — title block ============ */
+  footer{
+    padding:80px 5vw 40px;
+    position:relative;
+  }
+  .titleblock{
+    border:1px solid var(--panel-line);
+    max-width:1200px;
+  }
+  .tb-top{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;
+    padding:44px 40px; border-bottom:1px solid var(--panel-line);
+  }
+  .tb-top h2{font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:clamp(1.8rem,4vw,2.6rem); max-width:16ch;}
+  .contact-links{display:flex; flex-direction:column; gap:12px;}
+  .contact-links a{
+    font-family:'JetBrains Mono', monospace; font-size:14px; color:var(--ink-dim);
+    display:flex; align-items:center; gap:10px; transition:color 0.2s;
+  }
+  .contact-links a:hover{color:var(--accent);}
+  .contact-links a::before{content:'→'; color:var(--accent);}
+
+  .tb-fields{
+    display:grid; grid-template-columns:repeat(5, 1fr);
+  }
+  .tb-field{
+    padding:16px 20px; border-right:1px solid var(--panel-line);
+    font-family:'JetBrains Mono', monospace;
+  }
+  .tb-field:last-child{border-right:none;}
+  .tb-field .label{font-size:10px; color:var(--ink-faint); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;}
+  .tb-field .value{font-size:12.5px; color:var(--ink);}
+
+  .foot-note{
+    text-align:center; margin-top:36px; font-family:'JetBrains Mono', monospace;
+    font-size:11.5px; color:var(--ink-faint);
+  }
+
+  /* scroll reveal */
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity 0.7s ease, transform 0.7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px){
+    .about-grid, .edu-lang-row{grid-template-columns:1fr; gap:36px;}
+    .skill-grid{grid-template-columns:1fr;}
+    .cert-grid{grid-template-columns:1fr;}
+    .tb-fields{grid-template-columns:repeat(2,1fr);}
+    .tb-field:nth-child(2n){border-right:none;}
+  }
+  @media (max-width: 720px){
+    nav .nav-links{
+      position:fixed; top:63px; left:0; right:0; bottom:0;
+      background:var(--bg); flex-direction:column; align-items:flex-start;
+      padding:36px 8vw; gap:26px;
+      transform:translateX(100%); transition:transform 0.3s ease;
+    }
+    nav .nav-links.open{transform:translateX(0);}
+    .nav-toggle{display:flex;}
+    .coord-tl{display:none;}
+    section{padding:70px 6vw;}
+    header.hero{padding:110px 6vw 60px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top" class="logo-mark">
+    <svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="11.5" stroke="#5fc3e0" stroke-width="1"/><path d="M13 3v6M13 17v6M3 13h6M17 13h6" stroke="#5fc3e0" stroke-width="1"/></svg>
+    MEZDARI
+  </a>
+  <div class="nav-links" id="navLinks">
+    <ul>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<header class="hero" id="top">
+  <div class="grid-bg"></div>
+  <div class="sheet-coords coord-tl">SHEET 01/06 — REV.2026</div>
+  <div class="hero-inner">
+    <div class="eyebrow">Mechanical Engineer · Plastics · Automotive</div>
+    <h1 class="hero-title display">Moatez<br>Mezdari</h1>
+    <p class="hero-role">Designing and validating <b>plastic components for the automotive industry</b> — from feasibility studies to mass-production, across CAD, engineering change management, and cross-functional coordination.</p>
+    <div class="hero-meta">
+      <span><span class="dot"></span>Tunis, Tunisia</span>
+      <span><span class="dot"></span>SEGULA Technologies — since Nov 2023</span>
+      <span><span class="dot"></span>Renault XR110 · Citroën CR3 · Alpine T3E · Fiat F1H</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="mailto:Moatez.mezdari.tn@gmail.com">Get in touch</a>
+      <a class="btn btn-ghost" href="#experience">View experience ↓</a>
+    </div>
+  </div>
+  <div class="sheet-coords coord-br">TOL. ±0.05 · CATIA V5/V6 · ENOVIA</div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="tag mono">§ 01</span>
+      <h2 class="display">Profile</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <p>I work at the intersection of <b>design and validation</b> for plastic automotive components — trim, bumpers, emblems, interior parts — carrying them from early feasibility through 3D/2D iteration to production-ready release.</p>
+        <p>As <b>Interface Leader</b> on the Renault XR110 center console, I coordinate directly between the customer and internal teams, manage engineering changes (ECR/ECO), and keep packaging and interference checks aligned as designs evolve. I'm equally comfortable in a CAD session, a supplier review, or writing the technical documentation that ties both together.</p>
+        <p>My background spans biomedical prototyping and prosthetics design before automotive — which is where the habit of treating every part as a system of tolerances, materials, and constraints comes from.</p>
+      </div>
+      <div class="reveal">
+        <div class="spec-list mono">
+          <div class="spec-row"><span>Role</span><span>Mechanical Engineer</span></div>
+          <div class="spec-row"><span>Focus</span><span>Plastic Components</span></div>
+          <div class="spec-row"><span>Sector</span><span>Automotive</span></div>
+          <div class="spec-row"><span>CAD</span><span>CATIA V5/V6, SolidWorks</span></div>
+          <div class="spec-row"><span>PLM</span><span>Enovia</span></div>
+          <div class="spec-row"><span>Standards</span><span>APQP · PPAP · FMEA</span></div>
+          <div class="spec-row"><span>Languages</span><span>FR · EN · AR</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="tag mono">§ 02</span>
+      <h2 class="display">Experience</h2>
+      <div class="rule"></div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-node"></div>
+        <div class="tl-head">
+          <span class="tl-role display">Mechanical Engineer</span>
+          <span class="tl-date">NOV 2023 — PRESENT</span>
+        </div>
+        <div class="tl-org">SEGULA Technologies · <b>Lac 2, Tunis</b></div>
+        <div class="part-tags">
+          <span class="part-tag">Renault XR110 — center console</span>
+          <span class="part-tag">Citroën CR3 — interior trims, bumpers, emblems</span>
+          <span class="part-tag">Alpine T3E — center console</span>
+          <span class="part-tag">Fiat F1H — Italy / Turkey</span>
+        </div>
+        <ul class="tl-list">
+          <li>Interface Leader (LI) for Renault XR110 — technical coordination with customer and internal teams</li>
+          <li>Citroën CR3 — responsible for interior trim parts, in particular door panels</li>
+          <li>Alpine T3E — center console study and design: isostatism, dimensional chain (chaîne de cote), and design definition</li>
+          <li>Fiat F1H (current) — coordinate between the engineering site in Italy and the production site in Turkey, managing design changes, quality, and communication across teams</li>
+          <li>Led development of plastic parts through feasibility, design iteration, and validation follow-up</li>
+          <li>Managed engineering changes (ECR/ECO) and mass-production updates</li>
+          <li>3D modeling and 2D drawing updates using CATIA V5/V6 and RVT</li>
+          <li>Ran packaging and environment analysis, including interference checks and technical presentations</li>
+          <li>Prepared technical documentation: drawings, specifications, test reports</li>
+          <li>Worked closely with suppliers, quality engineers, and project teams</li>
+        </ul>
+      </div>
+
+      <div class="tl-item past reveal">
+        <div class="tl-node"></div>
+        <div class="tl-head">
+          <span class="tl-role display">Engineering Intern — Biomedical Device</span>
+          <span class="tl-date">FEB — DEC 2022</span>
+        </div>
+        <div class="tl-org">D-WEE Healthcare · Sousse</div>
+        <ul class="tl-list">
+          <li>Designed and developed an electric syringe pump</li>
+          <li>Built the prototype and handled mechatronic integration</li>
+        </ul>
+      </div>
+
+      <div class="tl-item past reveal">
+        <div class="tl-node"></div>
+        <div class="tl-head">
+          <span class="tl-role display">Mechanical Design Intern</span>
+          <span class="tl-date">FEB — JUL 2020</span>
+        </div>
+        <div class="tl-org">ISETR · Radès</div>
+        <ul class="tl-list">
+          <li>Designed and optimized a bionic upper-limb prosthesis</li>
+          <li>Carried out 3D modeling, prototyping, and functional testing</li>
+        </ul>
+      </div>
+
+      <div class="tl-item past reveal">
+        <div class="tl-node"></div>
+        <div class="tl-head">
+          <span class="tl-role display">FTTH Study Intern</span>
+          <span class="tl-date">JUL 2019</span>
+        </div>
+        <div class="tl-org">SBE · Djerba</div>
+        <ul class="tl-list">
+          <li>Conducted FTTH network studies</li>
+        </ul>
+      </div>
+
+      <div class="tl-item past reveal">
+        <div class="tl-node"></div>
+        <div class="tl-head">
+          <span class="tl-role display">Production Intern</span>
+          <span class="tl-date">FEB 2019</span>
+        </div>
+        <div class="tl-org">Chakira Cable · Tunis</div>
+        <ul class="tl-list">
+          <li>Learned cable manufacturing processes</li>
+          <li>Performed quality control on finished products</li>
+        </ul>
+      </div>
+
+      <div class="tl-item past reveal">
+        <div class="tl-node"></div>
+        <div class="tl-head">
+          <span class="tl-role display">Intern</span>
+          <span class="tl-date">FEB 2018</span>
+        </div>
+        <div class="tl-org">STEG · Djerba</div>
+        <ul class="tl-list">
+          <li>Introduction to the professional industrial environment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="tag mono">§ 03</span>
+      <h2 class="display">Skills</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="skill-grid reveal">
+      <div class="skill-panel">
+        <h3 data-ref="A · ">Design &amp; Modeling</h3>
+        <ul>
+          <li>CATIA V5/V6</li>
+          <li>SolidWorks</li>
+          <li>RVT</li>
+          <li>3D/2D modeling &amp; simulation</li>
+          <li>Plastic materials &amp; injection molding</li>
+        </ul>
+      </div>
+      <div class="skill-panel">
+        <h3 data-ref="B · ">Automotive Standards</h3>
+        <ul>
+          <li>APQP</li>
+          <li>PPAP</li>
+          <li>FMEA</li>
+          <li>MSA / SPC</li>
+          <li>Renault ANPQP</li>
+        </ul>
+      </div>
+      <div class="skill-panel">
+        <h3 data-ref="C · ">Process &amp; Tools</h3>
+        <ul>
+          <li>PLM — Enovia</li>
+          <li>Project &amp; engineering processes</li>
+          <li>Quality control systems</li>
+          <li>Engineering change management</li>
+          <li>Microsoft Office</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certifications">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="tag mono">§ 04</span>
+      <h2 class="display">Certifications</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="cert-grid reveal">
+      <div class="cert-card">
+        <div class="stamp">2023</div>
+        <h4 class="display">SEGULA Technologies</h4>
+        <div class="cert-org mono">Internal Certification Program</div>
+        <div class="cert-items">Product Designer · CATIA V6 Basics · DMU V6 · Interchangeability · Technical Leader · Project Leader</div>
+      </div>
+      <div class="cert-card">
+        <div class="stamp">2021</div>
+        <h4 class="display">ENIM</h4>
+        <div class="cert-org mono">National Engineering School of Monastir</div>
+        <div class="cert-items">Industry 4.0 · IoT · AI · Robotics · Design Thinking</div>
+      </div>
+      <div class="cert-card">
+        <div class="stamp">2018</div>
+        <h4 class="display">SolidWorks Certifications</h4>
+        <div class="cert-org mono">ISETR</div>
+        <div class="cert-items">Associate Simulation · Associate Mechanical Design · Professional Mechanical Design · Professional Drawing Tools</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="tag mono">§ 05</span>
+      <h2 class="display">Education &amp; Languages</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="edu-lang-row">
+      <div class="reveal">
+        <div class="edu-item">
+          <span class="edu-year mono">2022</span>
+          <h4>Master's Degree in Mechanical Production Engineering</h4>
+          <div class="edu-school">National Engineering School of Monastir</div>
+        </div>
+        <div class="edu-item">
+          <span class="edu-year mono">2020</span>
+          <h4>Applied Bachelor's Degree in Mechanical Engineering (Plastics)</h4>
+          <div class="edu-school">ISET Radès</div>
+        </div>
+        <div class="edu-item">
+          <span class="edu-year mono">2017</span>
+          <h4>Technical Baccalaureate</h4>
+          <div class="edu-school">Ajim Djerba High School</div>
+        </div>
+      </div>
+      <div class="lang-block reveal">
+        <h3>Languages</h3>
+        <div class="lang-row"><span>French</span><div class="lang-bars"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div></div>
+        <div class="lang-row"><span>English</span><div class="lang-bars"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div></div>
+        <div class="lang-row"><span>Arabic</span><div class="lang-bars"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="titleblock reveal">
+      <div class="tb-top">
+        <h2 class="display">Let's talk about your next part.</h2>
+        <div class="contact-links">
+          <a href="mailto:Moatez.mezdari.tn@gmail.com">Moatez.mezdari.tn@gmail.com</a>
+          <a href="tel:+21652028701">(+216) 52 028 701</a>
+          <a href="#top">Back to top</a>
+        </div>
+      </div>
+      <div class="tb-fields">
+        <div class="tb-field"><div class="label">Name</div><div class="value">M. Mezdari</div></div>
+        <div class="tb-field"><div class="label">Discipline</div><div class="value">Mechanical Eng.</div></div>
+        <div class="tb-field"><div class="label">Location</div><div class="value">Tunis, TN</div></div>
+        <div class="tb-field"><div class="label">Sheet</div><div class="value">01 OF 01</div></div>
+        <div class="tb-field"><div class="label">Rev.</div><div class="value">2026</div></div>
+      </div>
+    </div>
+    <div class="foot-note">© 2026 Moatez Mezdari — Mechanical Engineer, Automotive Plastics</div>
+  </div>
+</footer>
+
+<script>
+  // mobile nav
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', false);
+  }));
+
+  // scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
